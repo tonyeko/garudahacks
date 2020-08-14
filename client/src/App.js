@@ -1,19 +1,20 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "./App.css";
-import Navbar from "./Component/Navbar";
+import NavigationBar from "./Component/NavigationBar";
 import Home from "./Component/Home";
+import AdminIndexPage from "./pages/admin";
 // import logo from './logo.svg';
 
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
-      <section className="container">
-        <Switch>
-          <Route exact path="/" component={Home} />
-        </Switch>
-      </section>
+      <NavigationBar />
+      <Switch>
+        <Route exact path="/" component={AdminIndexPage} />
+      </Switch>
+      {/* <section className="container"> */}
+      {/* </section> */}
     </BrowserRouter>
   );
 }
