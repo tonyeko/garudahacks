@@ -38,7 +38,7 @@ def process_ocr():
 
 
 @app.route("/prescription", methods=['GET'])
-@cross_origin(origin='*', headers=['Content-Type'])
+@cross_origin(origin='*')
 def prescription():
     query = request.args.get('search')
     rgx = re.compile(f'.*{query}.*', re.IGNORECASE)  # compile the regex
@@ -48,9 +48,20 @@ def prescription():
         row[i], ObjectId) else row[i] for i in row}, result))
     return jsonify(result)
 
+@app.route('/prescription/<id>', methods=['PUT'])
+@cross_origin(origin='*')
+def update_stock(id):
+    data = json.loads(request.data.decode())
+    if data:
+        db.prescriptions.update_one({'_id': ObjectId(id)}, {
+            '$set': {'stock': data['stock']}
+        })
+        return {'status': 201}
+    return {'status': 204}
+
 
 @app.route("/doctor", methods=['GET'])
-@cross_origin(origin='*', headers=['Content-Type'])
+@cross_origin(origin='*')
 def doctor():
     query = request.args.get('search')
     rgx = re.compile(f'.*{query}.*', re.IGNORECASE)
@@ -61,7 +72,7 @@ def doctor():
     return jsonify(result)
 
 @app.route("/request", methods=['GET', 'POST'])
-@cross_origin(origin='*', headers=['Content-Type'])
+@cross_origin(origin='*')
 def post_requestQuery():
     if request.method == 'GET':
         query = request.args.get('doctor')
