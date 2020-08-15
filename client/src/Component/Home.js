@@ -9,6 +9,7 @@ const Home = () => {
     formData.append("file", file);
     const requestOptions = {
       method: "POST",
+      mode: "no-cors",
       body: formData,
     };
 
