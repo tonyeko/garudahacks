@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
 import Table from "react-bootstrap/Table";
+import MedicineDetails from "../../components/admin/MedicineDetails";
 
 const AdminIndexPage = () => {
+  const [show, setShow] = useState(false);
+
   const testingCol = () => {
     let arr = [];
     for (let i = 0; i < 10; i++) {
       arr.push(
         <Col xs="4" className="p-4">
-          {i + 1}of 10
+          {i + 1} of 10
         </Col>
       );
     }
@@ -23,10 +26,7 @@ const AdminIndexPage = () => {
       <Alert variant="info">Remember to stock up medicines!</Alert>
       <div className="position-relative">
         <h1>Current Medicine Statistics</h1>
-        <div
-          className="position-absolute bg-info"
-          // style={{ bottom: -10, height: "4px", width: "50%" }}
-        />
+        <div className="position-absolute bg-info" />
         <Table responsive="lg">
           <thead>
             <tr>
@@ -48,11 +48,24 @@ const AdminIndexPage = () => {
                   </td>
                   <td>{Math.floor(Math.random() * 100)}</td>
                   <td>
-                    <a href="#">Details...</a>
+                    <a
+                      href="#"
+                      onClick={() => {
+                        setShow(true);
+                      }}
+                    >
+                      Details...
+                    </a>
                   </td>
                 </tr>
               );
             })}
+            <MedicineDetails
+              show={show}
+              onHide={() => {
+                setShow(false);
+              }}
+            />
           </tbody>
         </Table>
       </div>

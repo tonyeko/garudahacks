@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "./App.css";
-import NavigationBar from "./Component/NavigationBar";
-import Home from "./Component/Home";
+import NavigationBar from "./components/NavigationBar";
+import Home from "./components/Home";
 import AdminIndexPage from "./pages/admin";
 // import logo from './logo.svg';
 
