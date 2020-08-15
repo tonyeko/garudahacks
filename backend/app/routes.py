@@ -1,7 +1,7 @@
 from app import app
 from flask import request
 from app import db
-from app import ocr
+from app.ocr import ocr
 from bson.json_util import dumps
 from werkzeug.utils import secure_filename
 from flask_cors import cross_origin
@@ -18,7 +18,7 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():
-    return {'data':['Hello', 'World']}
+    return {'Hello': 'World'}
 
 
 @app.route('/user', methods=['GET', 'POST'])
@@ -28,19 +28,20 @@ def user():
     
 
 @app.route('/ocr', methods=['POST'])
-@cross_origin()
+@cross_origin(origin='*')
 def process_ocr():
+    f = request.files['file']
     if 'file' not in request.files or f.filename == '':
         return {'status': 204}
     f = request.files['file']
     if f and allowed_file(f.filename):
         sfname = 'images/'+str(secure_filename(f.filename))
         f.save(sfname)
-        return {'data': ocr(sfname)}    
+        return {'data': ocr(sfname)}
     
 
 @app.route("/prescription")
-@cross_origin()
+@cross_origin(origin='*',headers=['Content-Type'])
 def prescription():
     query = request.args.get('search')
     result = db.db.prescriptions.find({"name": query})
