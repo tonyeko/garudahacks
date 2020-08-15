@@ -42,11 +42,11 @@ def process_ocr():
     if f and allowed_file(f.filename):
         sfname = UPLOAD_FOLDER+str(secure_filename(f.filename))
         f.save(sfname)
-        result = {}
+        result = []
         for data in ocr(sfname):
-            result[data] = list(map(lambda row: {i: str(row[i]) if isinstance(
-                row[i], ObjectId) else row[i] for i in row if i != 'name'}, db.db.prescriptions.find({"name": data})))[0]
-        return result
+            result.append(list(map(lambda row: {i: str(row[i]) if isinstance(
+                row[i], ObjectId) else row[i] for i in row}, db.db.prescriptions.find({"name": data})))[0])
+        return jsonify(result)
 
 
 @app.route("/prescription")
