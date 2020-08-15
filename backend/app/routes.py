@@ -3,7 +3,7 @@ from flask import request
 from app import db
 from app import ocr
 from bson.json_util import dumps
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 
 @app.route('/')
 def index():
