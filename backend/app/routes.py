@@ -30,10 +30,15 @@ def process_ocr():
     if f and allowed_file(f.filename):
         sfname = UPLOAD_FOLDER+str(secure_filename(f.filename))
         f.save(sfname)
-        result = []
+        result = {}
+        prescript = []
         for data in ocr(sfname):
-            result.append(list(map(lambda row: {i: str(row[i]) if isinstance(
-                row[i], ObjectId) else row[i] for i in row}, db.prescriptions.find({"name": data.capitalize()})))[0])
+            if "Dr." not in data:
+                prescript.append(list(map(lambda row: {i: str(row[i]) if isinstance(
+                    row[i], ObjectId) else row[i] for i in row}, db.prescriptions.find({"name": data.capitalize()})))[0])
+            else: 
+                result['doctor'] = data.title()
+            result['prescriptions'] = prescript
         return jsonify(result)
 
 
@@ -47,6 +52,7 @@ def prescription():
     result = list(map(lambda row: {i: str(row[i]) if isinstance(
         row[i], ObjectId) else row[i] for i in row}, result))
     return jsonify(result)
+
 
 @app.route('/prescription/<id>', methods=['PUT'])
 @cross_origin(origin='*')
@@ -71,6 +77,7 @@ def doctor():
         row[i], ObjectId) else row[i] for i in row}, result))
     return jsonify(result)
 
+
 @app.route("/request", methods=['GET', 'POST'])
 @cross_origin(origin='*')
 def post_requestQuery():
@@ -84,7 +91,7 @@ def post_requestQuery():
         return jsonify(result)
     data = json.loads(request.data.decode())
     if data:
-        db.requests.insert_one({"doctor": data['doctor'], "prescriptions": data['prescriptions']})
-        return {'status':201}
-    return {'status':204}
-    
+        db.requests.insert_one(
+            {"doctor": data['doctor'], "prescriptions": data['prescriptions']})
+        return {'status': 201}
+    return {'status': 204}
