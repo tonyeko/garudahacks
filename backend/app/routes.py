@@ -1,12 +1,12 @@
 from app import app
-from flask import request
-from app import db
+from flask import request, jsonify
+from app.db import db
 from app.ocr import ocr
 from bson.json_util import dumps
 from bson import ObjectId
 from werkzeug.utils import secure_filename
 from flask_cors import cross_origin
-from flask import jsonify
+import re
 
 # define a folder to store and later serve the images
 UPLOAD_FOLDER = 'images/'
@@ -15,21 +15,8 @@ UPLOAD_FOLDER = 'images/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 # function to check the file extension
-
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-@app.route('/')
-def index():
-    return {'Hello': 'World'}
-
-
-@app.route('/user', methods=['GET', 'POST'])
-def user():
-    if request.method == 'GET':
-        return {'user': 'test'}
 
 
 @app.route('/ocr', methods=['POST'])
@@ -45,7 +32,7 @@ def process_ocr():
         result = []
         for data in ocr(sfname):
             result.append(list(map(lambda row: {i: str(row[i]) if isinstance(
-                row[i], ObjectId) else row[i] for i in row}, db.db.prescriptions.find({"name": data})))[0])
+                row[i], ObjectId) else row[i] for i in row}, db.prescriptions.find({"name": data.capitalize()})))[0])
         return jsonify(result)
 
 
@@ -53,7 +40,21 @@ def process_ocr():
 @cross_origin(origin='*', headers=['Content-Type'])
 def prescription():
     query = request.args.get('search')
-    result = db.db.prescriptions.find({"name": query}) if query else db.db.prescriptions.find()
+    rgx = re.compile(f'.*{query}.*', re.IGNORECASE)  # compile the regex
+    result = db.prescriptions.find(
+        {"name": rgx}) if query else db.prescriptions.find()
     result = list(map(lambda row: {i: str(row[i]) if isinstance(
-                row[i], ObjectId) else row[i] for i in row}, result))
+        row[i], ObjectId) else row[i] for i in row}, result))
+    return jsonify(result)
+
+
+@app.route("/doctor")
+@cross_origin(origin='*', headers=['Content-Type'])
+def doctor():
+    query = request.args.get('search')
+    rgx = re.compile(f'.*{query}.*', re.IGNORECASE)  # compile the regex
+    result = db.doctors.find(
+        {"name": rgx}) if query else db.doctors.find()
+    result = list(map(lambda row: {i: str(row[i]) if isinstance(
+        row[i], ObjectId) else row[i] for i in row}, result))
     return jsonify(result)
