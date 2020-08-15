@@ -33,7 +33,7 @@ def process_ocr():
         result = {}
         prescript = []
         for data in ocr(sfname):
-            if "Dr." not in data:
+            if "Dr." not in data.capitalize():
                 prescript.append(list(map(lambda row: {i: str(row[i]) if isinstance(
                     row[i], ObjectId) else row[i] for i in row}, db.prescriptions.find({"name": data.capitalize()})))[0])
             else: 
