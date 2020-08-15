@@ -2,10 +2,12 @@ import React, { useState, useRef } from "react";
 import axios from "axios";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import Dropdown from "react-bootstrap/DropDown";
 
 const Home = () => {
   const [file, setFile] = useState(null);
   const [result, setResult] = useState(null);
+  const [isEnglish, setIsEnglish] = useState(true);
   const myRef = useRef(null);
 
   const scrollToRef = (ref) => {
@@ -19,7 +21,9 @@ const Home = () => {
     try {
       const res = await axios.post("http://localhost:5000/ocr", formData);
       setResult(res.data);
+      console.log(res.data);
       executeScroll();
+      setFile(null);
     } catch (err) {
       alert(err.message);
     }
@@ -29,7 +33,7 @@ const Home = () => {
     <>
       <div style={{ padding: "3rem", height: "80vh" }}>
         <section id="upload-page" style={{ height: "100%" }}>
-          <h2 style={{ textAlign: "center" }}>OCR For Prescription</h2>
+          <h1 style={{ textAlign: "center" }}>OCR For Prescription</h1>
           <div
             style={{
               display: "flex",
@@ -37,7 +41,7 @@ const Home = () => {
               marginTop: "20px",
             }}
           >
-            <form style={{ width: "18rem" }} onSubmit={processFile}>
+            <form style={{ width: "25rem" }} onSubmit={processFile}>
               {file ? (
                 <img
                   src={URL.createObjectURL(file)}
@@ -56,27 +60,66 @@ const Home = () => {
                     alignItems: "center",
                   }}
                 >
-                  <span>Upload your prescription</span>
+                  <div>Prescription Here</div>
                 </div>
               )}
+              <label for="img" className="success big">
+                Upload
+              </label>
+              <button className="success big">Submit</button>
               <input
                 type="file"
                 accept="image/*"
                 id="img"
-                placeholder="Browse File"
                 onChange={(e) => setFile(e.target.files[0])}
+                style={{ display: "none" }}
               />
-              <button>Upload</button>
             </form>
           </div>
         </section>
         {result && (
-          <section ref={myRef} style={{ height: "100vh" }}>
-            <h2 style={{ textAlign: "center", margin: "25px" }}>Description</h2>
-            {result.map((medicine) => (
+          <section ref={myRef} style={{ height: "100vh", marginTop: "12rem" }}>
+            <h2 style={{ textAlign: "center", margin: "25px" }}>
+              Digital Prescription{" "}
+              <span>
+                authorize by{" "}
+                <span style={{ color: "green" }}>{result.doctor}</span>
+              </span>
+            </h2>
+            <Dropdown>
+              <Dropdown.Toggle variant="success" id="dropdown-basic">
+                Language
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => setIsEnglish(true)}>
+                  English
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setIsEnglish(false)}>
+                  Indonesia
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            {result.prescriptions.map((medicine) => (
               <Card key={medicine.id} bg="light">
                 <Card.Body>
-                  <Card.Text>{medicine.description}</Card.Text>
+                  <Card.Text>
+                    {isEnglish ? medicine.description : medicine.description_id}{" "}
+                  </Card.Text>
+                  <Card.Text>
+                    <b>Use:{medicine.treat}</b>
+                  </Card.Text>
+                  <Card.Text>
+                    <b>Price:{medicine.price}</b>
+                  </Card.Text>
+                  <Card.Text>
+                    <b>Stock:</b>
+                    {medicine.stock}
+                  </Card.Text>
+                  <Card.Text>
+                    <b>Dose:</b>
+                    {medicine.dose}
+                  </Card.Text>
                 </Card.Body>
               </Card>
             ))}
@@ -87,7 +130,7 @@ const Home = () => {
                 justifyContent: "flex-end",
               }}
             >
-              <Button href="#upload-page" variant="success">
+              <Button href="/ocr#upload-page" variant="success">
                 Reupload
               </Button>
             </div>
