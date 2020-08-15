@@ -7,6 +7,7 @@ from bson import ObjectId
 from werkzeug.utils import secure_filename
 from flask_cors import cross_origin
 import re
+import json
 
 # define a folder to store and later serve the images
 UPLOAD_FOLDER = 'images/'
@@ -36,7 +37,7 @@ def process_ocr():
         return jsonify(result)
 
 
-@app.route("/prescription")
+@app.route("/prescription", methods=['GET'])
 @cross_origin(origin='*', headers=['Content-Type'])
 def prescription():
     query = request.args.get('search')
@@ -48,13 +49,31 @@ def prescription():
     return jsonify(result)
 
 
-@app.route("/doctor")
+@app.route("/doctor", methods=['GET'])
 @cross_origin(origin='*', headers=['Content-Type'])
 def doctor():
     query = request.args.get('search')
-    rgx = re.compile(f'.*{query}.*', re.IGNORECASE)  # compile the regex
+    rgx = re.compile(f'.*{query}.*', re.IGNORECASE)
     result = db.doctors.find(
         {"name": rgx}) if query else db.doctors.find()
     result = list(map(lambda row: {i: str(row[i]) if isinstance(
         row[i], ObjectId) else row[i] for i in row}, result))
     return jsonify(result)
+
+@app.route("/request", methods=['GET', 'POST'])
+@cross_origin(origin='*', headers=['Content-Type'])
+def post_requestQuery():
+    if request.method == 'GET':
+        query = request.args.get('doctor')
+        rgx = re.compile(f'.*{query}.*', re.IGNORECASE)
+        result = db.requests.find(
+            {"doctor": rgx}) if query else db.requests.find()
+        result = list(map(lambda row: {i: str(row[i]) if isinstance(
+            row[i], ObjectId) else row[i] for i in row}, result))
+        return jsonify(result)
+    data = json.loads(request.data.decode())
+    if data:
+        db.requests.insert_one({"doctor": data['doctor'], "prescriptions": data['prescriptions']})
+        return {'status':201}
+    return {'status':204}
+    
