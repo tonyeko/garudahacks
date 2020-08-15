@@ -10,4 +10,5 @@ client = pymongo.MongoClient(CONNECTION_STRING)
 db = client.get_database('garudahacks')
 
 prescriptions = pymongo.collection.Collection(db, 'prescriptions')
-users = pymongo.collection.Collection(db, 'users')
+doctors = pymongo.collection.Collection(db, 'doctors')
+requests = pymongo.collection.Collection(db, 'requests')
