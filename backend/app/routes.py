@@ -9,7 +9,7 @@ from flask_cors import cross_origin
 from flask import jsonify
 
 # define a folder to store and later serve the images
-UPLOAD_FOLDER = '/images/'
+UPLOAD_FOLDER = 'images/'
 
 # allow files of a specific type
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
