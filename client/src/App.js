@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import "./App.css";
 import NavigationBar from "./Component/NavigationBar";
-import OCR from "./pages/OCR";
+import OCR from "./pages/patients";
 import AdminIndexPage from "./pages/admin";
+import "./App.css";
 // import logo from './logo.svg';
 
 function App() {
