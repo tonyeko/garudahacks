@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from 'axios';
 
 const Home = () => {
   const [file, setFile] = useState(null);
@@ -9,15 +10,13 @@ const Home = () => {
     formData.append("file", file);
     const requestOptions = {
       method: "POST",
-      mode: "no-cors",
       body: formData,
     };
-
-    try {
-      await fetch("http://localhost:5000/ocr", requestOptions);
-    } catch (err) {
-      alert(err.message);
-    }
+    
+    axios
+      .post("http://localhost:5000/ocr", formData)
+      .then(res => console.log(res))
+      .catch(err => console.warn(err));
   };
 
   return (
