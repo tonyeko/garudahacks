@@ -30,15 +30,20 @@ def process_ocr():
     if f and allowed_file(f.filename):
         sfname = UPLOAD_FOLDER+str(secure_filename(f.filename))
         f.save(sfname)
-        result = []
+        result = {}
+        prescript = []
         for data in ocr(sfname):
-            result.append(list(map(lambda row: {i: str(row[i]) if isinstance(
-                row[i], ObjectId) else row[i] for i in row}, db.prescriptions.find({"name": data.capitalize()})))[0])
+            if "Dr." not in data.capitalize():
+                prescript.append(list(map(lambda row: {i: str(row[i]) if isinstance(
+                    row[i], ObjectId) else row[i] for i in row}, db.prescriptions.find({"name": data.capitalize()})))[0])
+            else: 
+                result['doctor'] = data.title()
+            result['prescriptions'] = prescript
         return jsonify(result)
 
 
 @app.route("/prescription", methods=['GET'])
-@cross_origin(origin='*', headers=['Content-Type'])
+@cross_origin(origin='*')
 def prescription():
     query = request.args.get('search')
     rgx = re.compile(f'.*{query}.*', re.IGNORECASE)  # compile the regex
@@ -49,8 +54,20 @@ def prescription():
     return jsonify(result)
 
 
+@app.route('/prescription/<id>', methods=['PUT'])
+@cross_origin(origin='*')
+def update_stock(id):
+    data = json.loads(request.data.decode())
+    if data:
+        db.prescriptions.update_one({'_id': ObjectId(id)}, {
+            '$set': {'stock': data['stock']}
+        })
+        return {'status': 201}
+    return {'status': 204}
+
+
 @app.route("/doctor", methods=['GET'])
-@cross_origin(origin='*', headers=['Content-Type'])
+@cross_origin(origin='*')
 def doctor():
     query = request.args.get('search')
     rgx = re.compile(f'.*{query}.*', re.IGNORECASE)
@@ -60,8 +77,9 @@ def doctor():
         row[i], ObjectId) else row[i] for i in row}, result))
     return jsonify(result)
 
+
 @app.route("/request", methods=['GET', 'POST'])
-@cross_origin(origin='*', headers=['Content-Type'])
+@cross_origin(origin='*')
 def post_requestQuery():
     if request.method == 'GET':
         query = request.args.get('doctor')
@@ -73,7 +91,7 @@ def post_requestQuery():
         return jsonify(result)
     data = json.loads(request.data.decode())
     if data:
-        db.requests.insert_one({"doctor": data['doctor'], "prescriptions": data['prescriptions']})
-        return {'status':201}
-    return {'status':204}
-    
+        db.requests.insert_one(
+            {"doctor": data['doctor'], "prescriptions": data['prescriptions']})
+        return {'status': 201}
+    return {'status': 204}
