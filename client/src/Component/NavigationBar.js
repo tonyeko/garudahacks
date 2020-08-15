@@ -6,27 +6,13 @@ import NavDropdown from "react-bootstrap/esm/NavDropdown";
 
 const NavigationBar = () => {
   return (
-    // <nav className="navbar bg-dark">
-    //   <ul>
-    //     <li>
-    //       <NavLink exact to="/" activeClassName="active-navlink">
-    //         Home
-    //       </NavLink>
-    //     </li>
-    //     <li>
-    //       <NavLink exact to="/stock" activeClassName="active-navlink">
-    //         Stock
-    //       </NavLink>
-    //     </li>
-    //   </ul>
-    // </nav>
     <Navbar expand="lg" className="p-3" bg="dark" variant="dark">
       <Navbar.Brand>Nama App</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <Nav.Link href="#home">Home</Nav.Link>
-          <Nav.Link href="#link">Link</Nav.Link>
+          <Nav.Link href="/ocr">OCR</Nav.Link>
           <NavDropdown title="Dropdown" id="basic-nav-dropdown">
             <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
             <NavDropdown.Item href="#action/3.2">
