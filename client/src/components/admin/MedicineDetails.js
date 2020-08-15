@@ -4,11 +4,12 @@ import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import MedicineEdit from "./MedicineEdit";
+import MedicineRestock from "./MedicineRestock";
 
 const MedicineDetails = (props) => {
   const { show, onHide, selected } = props;
   const {
+    _id,
     name,
     stock,
     description,
@@ -17,7 +18,7 @@ const MedicineDetails = (props) => {
     price,
     treat,
   } = selected;
-  const [showEdit, setShowEdit] = useState(false);
+  const [showRestock, setShowRestock] = useState(false);
   const [lang, setLang] = useState("EN");
 
   return (
@@ -89,22 +90,31 @@ const MedicineDetails = (props) => {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={onHide}>OK</Button>
-          <Button
+          {/* <Button
             onClick={() => {
               onHide();
               setShowEdit(true);
             }}
           >
             Edit
+          </Button> */}
+          <Button
+            onClick={() => {
+              onHide();
+              setShowRestock(true);
+            }}
+          >
+            Restock
           </Button>
-          <Button onClick={onHide}>Restock</Button>
         </Modal.Footer>
       </Modal>
-      <MedicineEdit
-        show={showEdit}
+      <MedicineRestock
+        show={showRestock}
         onHide={() => {
-          setShowEdit(false);
+          setShowRestock(false);
         }}
+        medId={_id}
+        stock={stock}
       />
     </>
   );
