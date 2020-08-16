@@ -86,9 +86,9 @@ const Home = () => {
                 <span style={{ color: "green" }}>{result.doctor}</span>
               </span>
             </h2>
-            <Dropdown>
+            <Dropdown style={{marginBottom: "1rem"}}>
               <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Language
+                {isEnglish ? "English" : "Indonesia"}
               </Dropdown.Toggle>
 
               <Dropdown.Menu>

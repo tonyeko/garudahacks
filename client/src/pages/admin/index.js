@@ -71,7 +71,7 @@ const AdminIndexPage = () => {
 
   return (
     <Container>
-      <Alert variant="info">Remember to stock up medicines!</Alert>
+      <Alert variant="info" className="mt-4">Remember to stock up medicines!</Alert>
       <div class="pb-4">
         <h2>Current Medicine Statistics</h2>
         <Table responsive="lg">
