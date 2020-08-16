@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import "./App.css";
-import NavigationBar from "./components/NavigationBar";
-import Home from "./components/Home";
+import OCR from "./pages/patients";
 import AdminIndexPage from "./pages/admin";
+import NavigationBar from "./components/NavigationBar";
+import "./App.css";
 // import logo from './logo.svg';
 
 function App() {
@@ -12,9 +12,8 @@ function App() {
       <NavigationBar />
       <Switch>
         <Route exact path="/" component={AdminIndexPage} />
+        <Route exact path="/OCR" component={OCR} />
       </Switch>
-      {/* <section className="container"> */}
-      {/* </section> */}
     </BrowserRouter>
   );
 }
