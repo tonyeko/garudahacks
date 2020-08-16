@@ -17,13 +17,18 @@ body {
   height: 100%;
 }
 
+.casual {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
 .success {
   color: #fff;
   background-color: #28a745;
   border-color: #28a745;
 }
 
-.success,
 .big {
   width: 100%;
   height: 3rem;

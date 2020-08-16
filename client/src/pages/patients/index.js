@@ -21,7 +21,6 @@ const Home = () => {
     try {
       const res = await axios.post("http://localhost:5000/ocr", formData);
       setResult(res.data);
-      console.log(res.data);
       executeScroll();
       setFile(null);
     } catch (err) {
@@ -42,28 +41,31 @@ const Home = () => {
             }}
           >
             <form style={{ width: "25rem" }} onSubmit={processFile}>
-              {file ? (
-                <img
-                  src={URL.createObjectURL(file)}
-                  style={{ maxHeight: "300px" }}
-                  id="prescription"
-                  alt="Not Found"
-                />
-              ) : (
-                <div
-                  style={{
-                    border: "3px dotted blue",
-                    width: "100%",
-                    minHeight: "300px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <div>Prescription Here</div>
-                </div>
-              )}
-              <label for="img" className="success big">
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                {file ? (
+                  <img
+                    src={URL.createObjectURL(file)}
+                    style={{ maxHeight: "300px" }}
+                    id="prescription"
+                    alt="Not Found"
+                  />
+                ) : (
+                  <div
+                    style={{
+                      border: "3px dotted blue",
+                      width: "100%",
+                      minHeight: "300px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div>Prescription Here</div>
+                  </div>
+                )}
+              </div>
+
+              <label htmlFor="img" className="casual big">
                 Upload
               </label>
               <button className="success big">Submit</button>
@@ -86,8 +88,8 @@ const Home = () => {
                 <span style={{ color: "green" }}>{result.doctor}</span>
               </span>
             </h2>
-            <Dropdown style={{marginBottom: "1rem"}}>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
+            <Dropdown style={{ marginBottom: "1rem" }}>
+              <Dropdown.Toggle id="dropdown-basic">
                 {isEnglish ? "English" : "Indonesia"}
               </Dropdown.Toggle>
 
@@ -130,9 +132,7 @@ const Home = () => {
                 justifyContent: "flex-end",
               }}
             >
-              <Button href="/ocr#upload-page" variant="success">
-                Reupload
-              </Button>
+              <Button href="/ocr#upload-page">Reupload</Button>
             </div>
           </section>
         )}
